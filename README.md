@@ -17,6 +17,16 @@ publicURL: "https://jitsi.xunshi.com"
 tz: Asia/Shanghai
 # 这里也是web服务的域名，本质上是由web服务去代理xmpp，所以不需要给prosody服务配置负载均衡
 xmpp.domain: jitsi.xunshi.com
+# 这里是一个重点，他原始文档说了半天也就是这里，主要原因是不同于XMPP通过web来的，这里的jvb服务需要直接对外提供服务
+# 具体方式也就是他原文里面说的几种方案，从K8S集群角度考虑最靠谱的还是NodePort，特别注意需要修改UDPPort和TCPPort
+# 默认情况下K8S能够开放的NodePort在30000-32000所以一定要是这个范围
+# 这里如果没有对外提供端口则会出现超过3个会议情况下无法共享视频
+jvb:
+  service:
+    type: NodePort
+  UDPPort: 30001
+  TCPPort: 30002
+  publicIP: 192.168.0.112
 ```
 
 服务创建完毕之后手动给个负载均衡到web上面去就OK了，这里还有一个问题是XMPP的`WebSocket`需要允许跨域访问，所以需要加入一个配置，在prosody配置之中加入`XMPP_CROSS_DOMAIN=true`即可。
