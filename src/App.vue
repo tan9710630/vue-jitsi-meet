@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>讯视WebRTC Demo</h1>
+    <h1>Jitsi WebRTC Demo</h1>
     <a v-if="!beVideoStart">输入名称：</a>
     <input v-if="!beVideoStart" type="text" v-model="name" />
     <button v-if="!beVideoStart" @click="StartVideo">开始捕获</button>
